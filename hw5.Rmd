@@ -7,6 +7,7 @@ output: github_document
 
 ```{r setup, include=FALSE}
 source("./source/create_birthdays.R")
+source("./source/load_clean_csv.R")
 library(tidyverse)
 
 options(digits = 2)
@@ -64,6 +65,26 @@ Once there are at least 23 people in the room, there is a greater than 50% chanc
 
 ## Question 2
 ```{r Q2}
+
+file_names = list.files("./data", full.names = TRUE)
+
+study_df = tibble(data = purrr::map(file_names, load_clean_csv)) |> 
+  tidyr::unnest(cols = data)
+
+exp_ids = sort(unique(study_df$id[startsWith(study_df$id, "exp")]))
+con_ids = sort(unique(study_df$id[startsWith(study_df$id, "con")]))
+
+subject_colors = c(
+  setNames(colorRampPalette(c("lightblue", "darkblue"))(length(exp_ids)), exp_ids),
+  setNames(colorRampPalette(c("salmon", "darkred"))(length(con_ids)), con_ids)
+)
+study_df |> 
+  ggplot(aes(x = week, y = observation, group = id, color = id)) +
+  geom_line() +
+  scale_color_manual(values = subject_colors) +
+  labs(
+    x = "Week",
+    y = "Observation")
 
 ```
 
