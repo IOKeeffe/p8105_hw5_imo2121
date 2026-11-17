@@ -54,6 +54,7 @@ group_df |>
 
 
 ```
+
 Once there are at least 23 people in the room, there is a greater than 50% chance that two people share a birthday. With 50 people in the room, there is a `r max(pull(group_df, repeat_probability)) * 100`% chance of two people sharing a birthday.
 
 ## Problem 2
@@ -80,6 +81,7 @@ study_df |>
     y = "Observation")
 
 ```
+
 The control group has generally lower observation numbers than the experiment group. There doesn't seem to be much pattern to the control group, but the observation values for the experiment group are higher at the end of the 8 weeks.
 
 ## Problem 3
@@ -106,4 +108,47 @@ simulation_summary = simulation_results |>
 
 simulation_summary
 ```
+```{r}
+simulation_summary |> 
+  ggplot(aes(x = mu, y = power)) +
+  geom_point() +
+  scale_x_continuous(breaks = 0:6) +
+  geom_line() + 
+  labs(
+    x = "True mean",
+    y = "Test Power"
+  )
+```
 
+As true mean increases from 0, test power increases.
+
+```{r}
+simulation_summary |>
+  pivot_longer(
+    cols = c(average_estimate, average_estimate_rejected),
+    names_to = "samples",
+    values_to = "average_mu_hat"
+  ) |>
+  ggplot(aes(x = mu, y = average_mu_hat, color = samples)) +
+  geom_point() +
+  geom_line() +
+  scale_x_continuous(breaks = 0:6) +
+  scale_color_manual(
+    values = c(
+      average_estimate = "blue",
+      average_estimate_rejected = "red"
+    ),
+    labels = c(
+      average_estimate = "All samples",
+      average_estimate_rejected = "Rejected null only"
+    )
+  ) +
+  labs(
+    x = "True mean",
+    y = "Average estimated mean",
+    color = "Samples"
+  ) +
+  theme_minimal()
+```
+
+For all samples, the true mean and estimated mean match very closely. For samples where the null hypothesis was rejected, we can see a much higher mu hat when mu = 1, reflecting a selection bias. At mu = 0, the positive and negative extremes are both selected, bringing mu hat closer to mu.
