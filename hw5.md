@@ -3,14 +3,9 @@ Homework 5
 Ian O’Keeffe
 2026-11-17
 
-``` r
-create_birthdays = function(n) {
-  birthdays = sample(1:365, size = n, replace = T)
-  repeated_birthdays = length(unique(birthdays)) < n
-  
-  return(repeated_birthdays)
-}
+## Problem 1
 
+``` r
 birthday_results_df = expand_grid(
   number_of_people = 2:50,
   iter = 1:10000
@@ -39,7 +34,39 @@ group_df |>
     y = "Probability of a Shared Birthday")
 ```
 
-![](hw5_files/figure-gfm/unnamed-chunk-1-1.png)<!-- --> Once there are
-at least 23 people in the room, there is a greater than 50% chance that
-two people share a birthday. With 50 people in the room, there is a
-97.18% chance of two people sharing a birthday.
+<img src="hw5_files/figure-gfm/Problem 1-1.png" alt="" width="85%" style="display: block; margin: auto;" />
+Once there are at least 23 people in the room, there is a greater than
+50% chance that two people share a birthday. With 50 people in the room,
+there is a 96.98% chance of two people sharing a birthday.
+
+## Problem 2
+
+``` r
+file_names = list.files("./data", full.names = TRUE)
+
+study_df = tibble(data = purrr::map(file_names, load_clean_csv)) |> 
+  tidyr::unnest(cols = data)
+
+exp_ids = sort(unique(study_df$id[startsWith(study_df$id, "exp")]))
+con_ids = sort(unique(study_df$id[startsWith(study_df$id, "con")]))
+
+subject_colors = c(
+  setNames(colorRampPalette(c("lightblue", "darkblue"))(length(exp_ids)), exp_ids),
+  setNames(colorRampPalette(c("salmon", "darkred"))(length(con_ids)), con_ids)
+)
+study_df |> 
+  ggplot(aes(x = week, y = observation, group = id, color = id)) +
+  geom_line() +
+  scale_color_manual(values = subject_colors) +
+  labs(
+    x = "Week",
+    y = "Observation")
+```
+
+<img src="hw5_files/figure-gfm/Problem 2-1.png" alt="" width="85%" style="display: block; margin: auto;" />
+The control group has generally lower observation numbers than the
+experiment group. There doesn’t seem to be much pattern to the control
+group, but the observation values for the experiment group are higher at
+the end of the 8 weeks.
+
+## Problem 3

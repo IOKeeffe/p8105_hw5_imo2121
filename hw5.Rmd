@@ -8,29 +8,22 @@ output: github_document
 ```{r setup, include=FALSE}
 source("./source/create_birthdays.R")
 source("./source/load_clean_csv.R")
+source("./source/simulate_test.R")
 library(tidyverse)
 
 options(digits = 2)
-knitr::opts_chun$set(
+knitr::opts_chunk$set(
   echo = TRUE,         
   warning = FALSE,      
   message = FALSE,      
   fig.width = 6,        
-  asp = .6,      
-  fig.align = "center",
-  out.width = "85%"     
+  asp = .6
 )
 
 theme_set(theme_minimal() + theme(legend.position = "bottom"))
-
-
-options(
-  ggplot2.continuous.colour = "viridis",
-  ggplot2.continuous.fill = "viridis"
-)
 ```
-## Question 1
-```{r Question 1}
+## Problem 1
+```{r Problem 1}
 
 birthday_results_df = expand_grid(
   number_of_people = 2:50,
@@ -63,8 +56,8 @@ group_df |>
 ```
 Once there are at least 23 people in the room, there is a greater than 50% chance that two people share a birthday. With 50 people in the room, there is a `r max(pull(group_df, repeat_probability)) * 100`% chance of two people sharing a birthday.
 
-## Question 2
-```{r Q2}
+## Problem 2
+```{r Problem 2}
 
 file_names = list.files("./data", full.names = TRUE)
 
@@ -86,5 +79,31 @@ study_df |>
     x = "Week",
     y = "Observation")
 
+```
+The control group has generally lower observation numbers than the experiment group. There doesn't seem to be much pattern to the control group, but the observation values for the experiment group are higher at the end of the 8 weeks.
+
+## Problem 3
+```{r simulation, cache=TRUE}
+simulation_results = expand_grid(
+  mu = 0:6,
+  iteration = 1:5000
+) |>
+  mutate(results = map(mu, simulate_test)) |>
+  unnest(cols = results) |>
+  mutate(rejected = p_value < 0.05)
+
+```
+
+```{r}
+simulation_summary = simulation_results |>
+  group_by(mu) |>
+  summarize(
+    power = mean(rejected),
+    average_estimate = mean(mu_hat),
+    average_estimate_rejected = mean(mu_hat[rejected]),
+    .groups = "drop"
+  )
+
+simulation_summary
 ```
 
