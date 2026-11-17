@@ -6,28 +6,30 @@ output: github_document
 ---
 
 ```{r setup, include=FALSE}
-options(digits = 2)
+source("./source/create_birthdays.R")
 library(tidyverse)
+
+options(digits = 2)
 knitr::opts_chun$set(
   echo = TRUE,         
   warning = FALSE,      
   message = FALSE,      
-  fig.width = 8,        
-  fig.height = 5,       
-  dpi = 300,            
+  fig.width = 6,        
+  asp = .6,      
   fig.align = "center",
   out.width = "85%"     
 )
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
 ```
-
-```{r}
-
-create_birthdays = function(n) {
-  birthdays = sample(1:365, size = n, replace = T)
-  repeated_birthdays = length(unique(birthdays)) < n
-  
-  return(repeated_birthdays)
-}
+## Question 1
+```{r Question 1}
 
 birthday_results_df = expand_grid(
   number_of_people = 2:50,
@@ -59,4 +61,9 @@ group_df |>
 
 ```
 Once there are at least 23 people in the room, there is a greater than 50% chance that two people share a birthday. With 50 people in the room, there is a `r max(pull(group_df, repeat_probability)) * 100`% chance of two people sharing a birthday.
+
+## Question 2
+```{r Q2}
+
+```
 
