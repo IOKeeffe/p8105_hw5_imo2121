@@ -1,0 +1,10 @@
+---
+title: "Homework 5"
+author: "Ian O'Keeffe"
+date: "2026-11-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
