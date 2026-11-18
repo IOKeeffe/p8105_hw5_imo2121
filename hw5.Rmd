@@ -151,4 +151,4 @@ simulation_summary |>
   theme_minimal()
 ```
 
-For all samples, the true mean and estimated mean match very closely. For samples where the null hypothesis was rejected, we can see a much higher mu hat when mu = 1, reflecting a selection bias. At mu = 0, the positive and negative extremes are both selected, bringing mu hat closer to mu.
+For all samples, the true mean and estimated mean match very closely. For samples where the null hypothesis was rejected, we can see a much higher mu hat when mu = 1, reflecting a selection bias (it does not approximate the true value of Mu at low, non-zero values). At mu = 0, the positive and negative extremes are both selected, bringing mu hat closer to mu.
